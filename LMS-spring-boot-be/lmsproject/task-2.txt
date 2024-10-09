@@ -1,0 +1,13 @@
+{
+posttitle
+postContent
+postCategory 
+post 
+}
+
+json mai dalna hai response status
+
+//1. create a post section for teachers
+2. Convert the API's to show status code in json
+3. Create CRUD API's for all entity.
+4. Will add guest user also

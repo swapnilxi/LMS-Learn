@@ -43,6 +43,8 @@ public class SpringSecurity {
                         .permitAll()
                         .requestMatchers("/user/**").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/teacher/**").hasRole("TEACHER")
+                        .requestMatchers("/post/**").hasRole("TEACHER")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

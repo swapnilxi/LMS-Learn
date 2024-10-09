@@ -24,16 +24,24 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long courseId;
 
+    @Nonnull()
     private String title;
 
     @Column(length = 1000)
     private String description;
 
+    private String assignment;
+
     @ManyToOne
-    @JoinColumn(name = "trainer_id", nullable = false)
-    private Trainer trainer;  // Reference to the trainer who created or manages the course
+    @JoinColumn(name = "teacher_id", nullable = false)
+
+    private Teacher teacher; // Reference to the teacher who created or manages the course
 
     @Nonnull
-    private int duration;  // Duration in hours or minutes
+    private String  courseUrl;
+
+    // sub sections to add
+    @Nonnull
+    private int duration; // Duration in hours or minutes
 
 }
