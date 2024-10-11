@@ -30,7 +30,7 @@ public class PostService {
             String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                     .getUsername();
             // Fetch the teacher from the database
-            cachedTeacher = teacherRepo.findByTeacherUsername(username);
+            cachedTeacher = teacherRepo.findByTeacherUsername(username).get();
             if (cachedTeacher == null) {
                 throw new RuntimeException("Teacher not found");
             }
@@ -43,6 +43,13 @@ public class PostService {
     }
 
     public Post createPost(Post post) {
+        // Validate title and content
+        if (post.getTitle() == null || post.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty");
+        }
+        if (post.getContent() == null || post.getContent().trim().isEmpty()) {
+            throw new IllegalArgumentException("Content cannot be null or empty");
+        }
         // Create a new Post
         Post newPost = Post.builder()
                 .title(post.getTitle())
@@ -51,10 +58,26 @@ public class PostService {
                 .teacherName(getAuthenticatedTeacher().getTeacherUsername())
                 .catagories(PostEnu.REGULAR) // how can i take this from user ?
                 .build();
-
         // Save the Post to the database
         return postRepo.save(newPost);
     }
+
+    public Post updatePost(Post post) {
+        Post existingPost = postRepo.findById(post.getPostId())
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+    
+      
+        Teacher authenticatedUser = getAuthenticatedTeacher(); 
+        if (!existingPost.getTeacher().getTeacherId().equals(authenticatedUser.getTeacherId())) {
+            throw new IllegalArgumentException("You are not authorized to update this post");
+        }
+    
+        existingPost.setTitle(post.getTitle());
+        existingPost.setContent(post.getContent());
+    
+        return postRepo.save(existingPost);
+    }
+    
 
     public Post findPostById(Long id) {
         return postRepo.findById(id)

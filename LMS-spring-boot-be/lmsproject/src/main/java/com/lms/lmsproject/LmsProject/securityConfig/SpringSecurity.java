@@ -36,16 +36,19 @@ public class SpringSecurity {
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for stateless apps
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**",
+                                "/user/create-user",
+                                "/teacher/create-teacher",
+                                "/admin/create-admin",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html")
                         .permitAll()
-                        .requestMatchers("/user/**").hasRole("USER")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/teacher/**").hasRole("TEACHER")
-                        .requestMatchers("/post/**").hasRole("TEACHER")
-                        .requestMatchers("/course/**").hasRole("TEACHER")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/teacher/**").hasAnyRole("TEACHER", "ADMIN")
+                        .requestMatchers("/teacher/**").hasAnyRole("TEACHER", "ADMIN")
+                        .requestMatchers("/post/**").hasAnyRole("TEACHER", "ADMIN")
+                        .requestMatchers("/course/**").hasAnyRole("TEACHER", "ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

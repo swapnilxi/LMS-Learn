@@ -30,6 +30,7 @@ public class Course {
     private String courseTitle;
 
     @Column(length = 1000)
+    @Nonnull
     private String courseDescription;
 
     @ManyToOne

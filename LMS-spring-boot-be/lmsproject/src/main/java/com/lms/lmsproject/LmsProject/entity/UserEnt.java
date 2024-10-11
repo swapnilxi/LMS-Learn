@@ -31,9 +31,11 @@ public class UserEnt {
     private Long userId;
 
     @Column(unique = true)
+    @Nonnull
     private String userName;
 
     @Column(unique = true)
+    @Nonnull
     private String userEmail;
 
     @Nonnull

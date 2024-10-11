@@ -1,5 +1,7 @@
 package com.lms.lmsproject.LmsProject.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,8 +9,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.lms.lmsproject.LmsProject.repository.AdminRepo;
 import com.lms.lmsproject.LmsProject.repository.TeacherRepo;
 import com.lms.lmsproject.LmsProject.repository.UserEntRepo;
+import com.lms.lmsproject.LmsProject.entity.Admin;
 import com.lms.lmsproject.LmsProject.entity.Teacher;
 import com.lms.lmsproject.LmsProject.entity.UserEnt;
 
@@ -21,17 +25,26 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private TeacherRepo teacherRepo;
 
+    @Autowired
+    private AdminRepo adminRepo;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Fetch user from the database
-        UserEnt user = userRepo.findByUserName(username);
-        if (user != null) {
-            return buildUserDetails(user);
+        Optional<UserEnt> userOpt = userRepo.findByUserName(username);
+        if (userOpt.isPresent()) {
+            return buildUserDetails(userOpt.get());
         }
 
-        Teacher teacher = teacherRepo.findByTeacherUsername(username);
-        if (teacher != null) {
-            return buildUserDetails(teacher);
+        // If no user is found, try to find the teacher
+        Optional<Teacher> teacherOpt = teacherRepo.findByTeacherUsername(username);
+        if (teacherOpt.isPresent()) {
+            return buildUserDetails(teacherOpt.get());
+        }
+
+        Optional<Admin> adminOpt = adminRepo.findByAdminName(username);
+        if (adminOpt.isPresent()) {
+            return buildUserDetails(adminOpt.get());
         }
 
         // If neither found, throw exception
@@ -58,6 +71,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return User.builder()
                 .username(teacher.getTeacherUsername())
                 .password(teacher.getTeacherPassword())
+                .roles(roles)
+                .build();
+    }
+
+    private UserDetails buildUserDetails(Admin admin) {
+        String[] roles = admin.getRoles().stream()
+                .map(role -> role.name())
+                .toArray(String[]::new);
+
+        return User.builder()
+                .username(admin.getAdminName())
+                .password(admin.getAdminPassword())
                 .roles(roles)
                 .build();
     }

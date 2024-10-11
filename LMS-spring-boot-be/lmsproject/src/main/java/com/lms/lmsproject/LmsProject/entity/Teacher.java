@@ -32,9 +32,11 @@ public class Teacher {
     private Long teacherId;
 
     @Column(unique = true)
+    @Nonnull
     private String teacherUsername;
 
     @Column(unique = true)
+    @Nonnull
     private String teacherEmail;
 
     @Nonnull
