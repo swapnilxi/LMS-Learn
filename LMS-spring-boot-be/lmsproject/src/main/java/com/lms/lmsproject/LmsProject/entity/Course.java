@@ -1,5 +1,7 @@
 package com.lms.lmsproject.LmsProject.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,16 +26,25 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long courseId;
 
-    private String title;
+    @Nonnull
+    private String courseTitle;
 
     @Column(length = 1000)
-    private String description;
+    @Nonnull
+    private String courseDescription;
 
     @ManyToOne
-    @JoinColumn(name = "trainer_id", nullable = false)
-    private Trainer trainer;  // Reference to the trainer who created or manages the course
+    @JoinColumn(name = "teacher_id", nullable = false)
+    @JsonIgnore
+    private Teacher teacher; // Reference to the teacher who created or manages the course
+
+    private String teacherName;
 
     @Nonnull
-    private int duration;  // Duration in hours or minutes
+    private String  courseUrl;
+
+    // sub sections to add
+    @Nonnull
+    private String duration; // Duration in hours or minutes
 
 }
