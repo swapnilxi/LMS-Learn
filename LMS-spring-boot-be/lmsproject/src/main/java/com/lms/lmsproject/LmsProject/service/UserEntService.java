@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -83,6 +84,12 @@ public class UserEntService {
     }
 
     public UserEnt createNewUser(UserEnt requestUser) {
+        if (requestUser.getFirstName() == null || requestUser.getFirstName().trim().isEmpty()) {
+            throw new IllegalArgumentException("First Name can Not be Null");
+        }
+        if (requestUser.getLastName() == null || requestUser.getLastName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Last Name can Not be Null");
+        }
         if (requestUser.getUserName() == null || requestUser.getUserName().trim().isEmpty()) {
             throw new IllegalArgumentException("UserName can Not be Null");
         }
@@ -93,6 +100,8 @@ public class UserEntService {
             throw new IllegalArgumentException("User Password can Not be Null");
         }
         UserEnt user = UserEnt.builder()
+                .firstName(requestUser.getFirstName())
+                .lastName(requestUser.getLastName())
                 .userName(requestUser.getUserName())
                 .userEmail(requestUser.getUserEmail())
                 .userPassword(passwordEncoder.encode(requestUser.getUserPassword()))
@@ -105,6 +114,8 @@ public class UserEntService {
 
         UserEnt updatedUser = UserEnt.builder()
                 .userId(getAuthenticateUserEnt().getUserId())
+                .firstName(reqUser.getFirstName())
+                .lastName(reqUser.getLastName())
                 .userName(reqUser.getUserName())
                 .userEmail(reqUser.getUserEmail())
                 .userPassword(passwordEncoder.encode(reqUser.getUserPassword()))
@@ -114,7 +125,7 @@ public class UserEntService {
 
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(ObjectId id) {
         UserEnt user = userEntRepo.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User Id Not Found!"));
 

@@ -2,6 +2,7 @@ package com.lms.lmsproject.LmsProject.service;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -100,7 +101,7 @@ public class CourseService {
         return courseRepo.save(existingCourse);
     }
 
-    public void deleteCourse(Long courseId) {
+    public void deleteCourse(ObjectId courseId) {
         // Get the course by ID
         Course course = courseRepo.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));

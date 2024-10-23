@@ -2,22 +2,23 @@ package com.lms.lmsproject.LmsProject.controllers;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lms.lmsproject.LmsProject.customApiResponse.APIResponse;
 import com.lms.lmsproject.LmsProject.entity.Teacher;
 import com.lms.lmsproject.LmsProject.service.TeacherService;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping(path = "/teacher")
@@ -42,13 +43,12 @@ public class TeacherController {
     @PostMapping(path = "/create-teacher")
     public ResponseEntity<APIResponse<Teacher>> createTeacher(@RequestBody Teacher teacher) {
         try {
-            teacherService.createNewTeacher(teacher);
-            return new ResponseEntity<>(new APIResponse<Teacher>(HttpStatus.CREATED.value(), "Success", teacher),
-                    HttpStatus.OK);
-        } catch (Exception IllegalArgumentException) {
-            return new ResponseEntity<>(
-                    new APIResponse<Teacher>(HttpStatus.CONFLICT.value(), IllegalArgumentException.getMessage(), null),
-                    HttpStatus.OK);
+            Teacher newTeacher = teacherService.createNewTeacher(teacher);
+            return new ResponseEntity<>(new APIResponse<>(HttpStatus.CREATED.value(), "Success", newTeacher),
+                    HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new APIResponse<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null),
+                    HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -64,28 +64,37 @@ public class TeacherController {
         }
     }
 
-    // @PutMapping(path = "/update-teacher")
-    // public ResponseEntity<APIResponse<Teacher>> updateTeacher(@RequestBody Teacher reqteacher) {
-    //     try {
-    //         Teacher updatedTeacher = teacherService.updateTeacher(reqteacher);
-    //         return new ResponseEntity<>(new APIResponse<Teacher>(HttpStatus.CREATED.value(), "Success", updatedTeacher),
-    //                 HttpStatus.OK);
-    //     } catch (Exception IllegalArgumentException) {
-    //         return new ResponseEntity<>(
-    //                 new APIResponse<Teacher>(HttpStatus.CONFLICT.value(), IllegalArgumentException.getMessage(), null),
-    //                 HttpStatus.OK);
-    //     }
-    // }
+    @PutMapping(path = "/update-teacher")
+    public ResponseEntity<APIResponse<Teacher>> updateTeacher(@RequestBody Teacher reqTeacher) {
+        try {
+            Teacher updatedTeacher = teacherService.updateTeacher(reqTeacher);
+            return new ResponseEntity<>(new APIResponse<>(HttpStatus.CREATED.value(), "Success", updatedTeacher),
+                    HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new APIResponse<>(HttpStatus.CONFLICT.value(), e.getMessage(), null),
+                    HttpStatus.OK);
+        }
+    }
 
     @DeleteMapping(path = "/delete-teacher/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteUserByUserId(@PathVariable Long id) {
+    public ResponseEntity<APIResponse<Void>> deleteUserByUserId(@PathVariable ObjectId id) {
         try {
             teacherService.deleteTeacher(id);
-            return new ResponseEntity<>(new APIResponse<>(HttpStatus.NO_CONTENT.value(), "Success", null),
+            return new ResponseEntity<>(
+                    new APIResponse<>(HttpStatus.NO_CONTENT.value(), "Teacher deleted successfully", null),
                     HttpStatus.OK);
+
+        } catch (UsernameNotFoundException e) {
+            return new ResponseEntity<>(new APIResponse<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null),
+                    HttpStatus.OK);
+
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new APIResponse<>(HttpStatus.FORBIDDEN.value(), e.getMessage(), null),
+                    HttpStatus.OK);
+
         } catch (Exception e) {
             return new ResponseEntity<>(
-                    new APIResponse<>(HttpStatus.NOT_FOUND.value(), "Id Not Found !", null),
+                    new APIResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred", null),
                     HttpStatus.OK);
         }
     }

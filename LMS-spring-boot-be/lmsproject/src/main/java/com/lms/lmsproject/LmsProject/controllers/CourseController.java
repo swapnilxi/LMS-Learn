@@ -2,6 +2,7 @@ package com.lms.lmsproject.LmsProject.controllers;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,7 +80,7 @@ public class CourseController {
     }
 
     @DeleteMapping(path = "/delete-course/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteCourse(@PathVariable Long id) {
+    public ResponseEntity<APIResponse<Void>> deleteCourse(@PathVariable ObjectId id) {
         try {
             courseService.deleteCourse(id);
             return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), "Success", null), HttpStatus.OK);
