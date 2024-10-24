@@ -1,20 +1,25 @@
 package com.lms.lmsproject.LmsProject.entity;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+// import jakarta.persistence.Entity;
+// import jakarta.persistence.EnumType;
+// import jakarta.persistence.Enumerated;
+// import jakarta.persistence.GeneratedValue;
+// import jakarta.persistence.GenerationType;
+// import jakarta.persistence.Id;
+// import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Document
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,8 +27,7 @@ import lombok.NoArgsConstructor;
 public class Post {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long postId;
+    private ObjectId postId;
 
     // @Nonnull
     private String title;
@@ -31,10 +35,9 @@ public class Post {
     // @Nonnull
     private String content;
 
-    @Enumerated(EnumType.STRING)
     private PostEnu catagories;
 
-    @ManyToOne
+    @DBRef
     @JsonIgnore
     private Teacher teacher; // Reference to the Teacher entity
 

@@ -1,6 +1,8 @@
 package com.lms.lmsproject.LmsProject.controllers;
 
 import java.util.List;
+
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,7 +82,7 @@ public class AdminController {
     }
 
     @DeleteMapping(path = "/delete-admin/{id}")
-    ResponseEntity<APIResponse<Void>> updateAdmin(@PathVariable Long id) {
+    ResponseEntity<APIResponse<Void>> updateAdmin(@PathVariable ObjectId id) {
         try {
             adminService.deleteAdminById(id);
             return new ResponseEntity<>(new APIResponse<>(HttpStatus.OK.value(), "Success", null),

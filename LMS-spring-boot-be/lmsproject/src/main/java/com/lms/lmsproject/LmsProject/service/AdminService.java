@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -130,7 +131,7 @@ public class AdminService {
     }
     
 
-    public void deleteAdminById(Long id) {
+    public void deleteAdminById(ObjectId id) {
         Admin admin = adminRepoService.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("Admin Not Found !"));
 
