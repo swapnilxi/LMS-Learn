@@ -1,35 +1,39 @@
 package com.lms.lmsproject.LmsProject.entity;
 
-import java.util.List;
+import java.util.Set;
+
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Document
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Admin {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long adminId;
 
-    private String adminName;
-    
+    @Id
+    private ObjectId adminId;
+
+     @Field("adminEmail")
     private String adminEmail;
+
+    @Field("adminName")
+    private String adminName;
 
     @Nonnull
     private String adminPassword;
 
-    @Nonnull
-    private List<String> role;
+    // @ElementCollection(fetch = FetchType.EAGER)
+    // @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
 }

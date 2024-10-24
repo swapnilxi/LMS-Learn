@@ -7,13 +7,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 // import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.lms.lmsproject.LmsProject.entity.UserEnt;
+import com.lms.lmsproject.LmsProject.entity.Teacher;
 
 @Repository
-public interface UserEntRepo extends MongoRepository<UserEnt, ObjectId> {
+public interface TeacherRepo extends MongoRepository<Teacher, ObjectId> {
 
-    Optional<UserEnt> findByUserEmail(String userEmail);
+    Optional<Teacher> findByTeacherEmail(String teacherEmail);
 
-    Optional<UserEnt> findByUserName(String userName);
-
+    Optional<Teacher> findByTeacherUsername(String teacherUsername);
 }
